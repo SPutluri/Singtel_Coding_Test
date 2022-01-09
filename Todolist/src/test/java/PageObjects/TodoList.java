@@ -4,11 +4,9 @@ import io.cucumber.datatable.DataTable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.WrapsElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
-import stepdefs.StepDefinitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,22 +34,8 @@ public class TodoList {
 
     @FindBy(xpath = "/html/body/section/section/label")
     public WebElement todoListCompletedToggle;
-
-
-//    @FindBy(name = "txtPassword")
-//    WebElement password;
-//
-//    @FindBy(id = "logInPanelHeading")
-//    WebElement titleText;
-//
-//    @FindBy(id = "btnLogin")
-//    WebElement login;
-
     public TodoList(WebDriver driver) {
-
         this.driver = driver;
-
-        // This initElements method will create all WebElements
         PageFactory.initElements(driver, this);
     }
 
@@ -83,27 +67,6 @@ public class TodoList {
                 logger.info("[ERROR-APP]:Invalid Filter");
                 break;
         }
-//        if(filter.equalsIgnoreCase("All")){
-//         WebElement allFilter=   todoMVCFilters.get(0).findElement(By.tagName("a"));
-//         allFilter.click();
-//         Assert.assertTrue((allFilter.getText()).equalsIgnoreCase("All")&&
-//                 (allFilter.getAttribute("class")).equalsIgnoreCase("selected") ,"[ERROR-APP]:User not in All Filter");
-//
-//        }
-//        else if(filter.equalsIgnoreCase("Active")){
-//            WebElement activeFilter=   todoMVCFilters.get(1).findElement(By.tagName("a"));
-//            activeFilter.click();
-//            Assert.assertTrue(activeFilter.getText().equalsIgnoreCase("Active")&&
-//                    (activeFilter.getAttribute("class")).equalsIgnoreCase("selected") ,"[ERROR-APP]:User not in Active Filter");
-//
-//        }
-//        else if(filter.equalsIgnoreCase("Completed")){
-//            WebElement completedFilter=   todoMVCFilters.get(2).findElement(By.tagName("a"));
-//            completedFilter.click();
-//            Assert.assertTrue((completedFilter.getText()).equalsIgnoreCase("Completed")&&
-//                    (completedFilter.getAttribute("class")).equalsIgnoreCase("selected") ,"[ERROR-APP]:User not in Completed Filter");
-//
-//        }
         List<String> allTaskList = new ArrayList<>();
 
         for (int i = 0; i < todoAllFilterTaskList.size(); i++) {

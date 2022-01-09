@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -74,26 +75,10 @@ public class StepDefinitions {
                     logger.info("clear-completed Filter is displayed");
                     break;
                 default:
-                    Assert.fail("[ERROR-APP]:Invalid Filter "+filter );
+                    Assert.fail("[ERROR-APP]:Invalid Filter " + filter);
                     break;
 
             }
-//            if (filter.equalsIgnoreCase(ALL)) {
-//                Assert.assertTrue((todoListobj.todoMVCFilters.get(0).findElement(By.tagName("a")).getText()).equalsIgnoreCase(ALL), "All filter is not displayed");
-//                logger.info("All Filter is displayed");
-//            } else if (filter.equalsIgnoreCase(ACTIVE)) {
-//                Assert.assertTrue((todoListobj.todoMVCFilters.get(1).findElement(By.tagName("a")).getText()).equalsIgnoreCase(ACTIVE), "Active filter is not displayed");
-//                logger.info("Active Filter is displayed");
-//            } else if (filter.equalsIgnoreCase(COMPLETED)) {
-//                Assert.assertTrue((todoListobj.todoMVCFilters.get(2).findElement(By.tagName("a")).getText()).equalsIgnoreCase(COMPLETED), "Completed filter is not displayed");
-//                logger.info("Completed Filter is displayed");
-//            } else if (filter.equalsIgnoreCase(CLEAR_COMPLETED)) {
-//                Assert.assertTrue(!(todoListobj.todoclearcompletedBtn.getAttribute("style").contains("none")), "Completed filter is not displayed");
-//                logger.info("completed-completed Filter is displayed");
-//            } else {
-//                Assert.fail(filter + " entered is not displayed");
-//            }
-//        } 
         } else {
             if (filter.equalsIgnoreCase(CLEAR_COMPLETED)) {
                 Assert.assertTrue(todoListobj.todoclearcompletedBtn.getAttribute("style").contains("none"), "clear-completed filter is not displayed");
@@ -135,7 +120,7 @@ public class StepDefinitions {
                 todoListobj.todoclearcompletedBtn.click();
                 break;
             default:
-                Assert.fail("[ERROR-APP]:Invalid filter entered "+filter);
+                Assert.fail("[ERROR-APP]:Invalid filter entered " + filter);
                 break;
         }
 
@@ -171,7 +156,7 @@ public class StepDefinitions {
 
     @Then("I shouldnot see {string} filter tasks in {string} list")
     public void i_shouldnot_see_filter_tasks_in_list(String filter1, String filter2) throws Throwable {
-        Assert.assertFalse(todoListobj.getTasksFromFilters(filter2).stream().anyMatch(todoListobj.getTasksFromFilters(filter1)::contains), "[ERROR-APP]:"+filter2 + " has atleast 1 task in " + filter1);
+        Assert.assertFalse(todoListobj.getTasksFromFilters(filter2).stream().anyMatch(todoListobj.getTasksFromFilters(filter1)::contains), "[ERROR-APP]:" + filter2 + " has atleast 1 task in " + filter1);
         logger.info(filter2 + " filter has has no matching tasks in " + filter1 + " filter");
     }
 
@@ -179,8 +164,7 @@ public class StepDefinitions {
     @When("^I click on cancel symbol for \"([^\"]*)\" in the list$")
     public void i_click_on_cancel_symbol_for_in_completed_list(String task) {
 
-       for(WebElement taskName: todoListobj.todoAllFilterTaskList)
-         {
+        for (WebElement taskName : todoListobj.todoAllFilterTaskList) {
             if (taskName.findElement(By.xpath("div/label")).getText().equalsIgnoreCase(task)) {
                 taskName.findElement(By.xpath("div/label")).click();
                 new WebDriverWait(ServiceHooks.driver, 20).
@@ -195,10 +179,10 @@ public class StepDefinitions {
     @Then("^I (should|shouldnot) see \"([^\"]*)\" task in \"([^\"]*)\" list$")
     public void i_shouldnot_see_task_in_list(String condition, String task, String filter) throws Throwable {
         if (condition.equalsIgnoreCase("shouldnot")) {
-            Assert.assertFalse(todoListobj.getTasksFromFilters(filter).contains(task), "[ERROR-APP]: "+task + " is available in " + filter + " filter");
+            Assert.assertFalse(todoListobj.getTasksFromFilters(filter).contains(task), "[ERROR-APP]: " + task + " is available in " + filter + " filter");
             logger.info(task + " is not available in " + filter + " filter");
         } else {
-            Assert.assertTrue(todoListobj.getTasksFromFilters(filter).contains(task), "[ERROR-APP]: "+task + " is not available in " + filter + " filter");
+            Assert.assertTrue(todoListobj.getTasksFromFilters(filter).contains(task), "[ERROR-APP]: " + task + " is not available in " + filter + " filter");
             logger.info(task + " is available in " + filter + " filter");
         }
     }
@@ -230,5 +214,22 @@ public class StepDefinitions {
     public void iShouldSeeTheTaskListIsMarkedToCompleted() throws Throwable {
         Assert.assertTrue(todoListobj.getTasksFromFilters(ALL).size() == todoListobj.getTasksFromFilters(COMPLETED).size(), "Active tasks are left");
         logger.info("All the tasks are in Completed status");
+    }
+
+
+    @When("I edit the task {string} to {string}")
+    public void iEditTheTaskTo(String oldTask, String newTask)  {
+        Actions actions = new Actions(ServiceHooks.driver);
+        todoListobj.todoAllFilterTaskList.stream().
+                filter(ele-> ele.findElement(By.xpath("div/label")).getText().equalsIgnoreCase(oldTask))
+                .forEach(ele -> actions.doubleClick(ele.findElement(By.xpath("div/label"))).doubleClick().sendKeys(newTask).sendKeys(Keys.ENTER).perform());
+
+    }
+
+    @Then("I should be able to see {string} task in the filter")
+    public void iShouldBeAbleToSeeTaskInTheFilter(String newTask) throws Throwable {
+        Assert.assertTrue(todoListobj.getTasksFromFilters(ALL).contains(newTask),"[ERROR-APP]:new task unavailable in task list");
+        logger.info(newTask+" available in taskList");
+
     }
 }

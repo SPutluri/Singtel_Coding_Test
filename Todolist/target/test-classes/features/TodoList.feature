@@ -97,6 +97,11 @@ Feature: Manage To do List
     And I shouldnot see the entries of todolist in "Completed" filter
 
 
+    Scenario: Validate edit task functionality
+      Given I should see the entries of todolist in "All" filter
+      When I edit the task "raise a bug" to "raise the bug"
+      Then I should be able to see "raise the bug" task in the filter
+
 
 
 
